@@ -1,0 +1,8 @@
+.vscode/tasks.json
+.vscode/launch.json
+.vscode
+build/
+data/ui/MainWindow.ui~
+data/ui/ElementChatList.ui~
+data/ui/MessageElement.ui~
+data/ui/AuthWindow.ui~

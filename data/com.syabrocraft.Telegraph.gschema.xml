@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="Telegraph">
+	<schema id="com.syabrocraft.Telegraph" path="/com/syabrocraft/Telegraph/">
+	</schema>
+</schemalist>

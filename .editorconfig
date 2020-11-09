@@ -1,0 +1,10 @@
+root = true
+
+[*]
+indent_style = tab				# Tabs to indent
+indent_size = 4					# 4 columns width
+charset = utf-8					# Encode using UTF-8
+end_of_line = lf				# End lines with Linux-style
+max_line_length = 120			# Limit lines to 120 columns
+trim_trailing_whitespace = true	# Do not leave trailing whitespaces
+insert_final_newline = true		# Insert final newline on every file

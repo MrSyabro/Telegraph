@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.1 
+
+Copyright (C) MrSyabro
+
+This file is part of Maingram.
+
+Maingram is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Maingram is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Maingram.  If not, see <http://www.gnu.org/licenses/>.
+
+Author: MrSyabro
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="libhandy" version="0.0"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name Maingram -->
+  <!-- interface-description GTK Telegram client -->
+  <!-- interface-copyright MrSyabro -->
+  <!-- interface-authors MrSyabro -->
+  <template class="MaingramMessageElement" parent="GtkBox">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="halign">start</property>
+    <property name="margin-start">18</property>
+    <property name="margin-end">18</property>
+    <property name="margin-top">4</property>
+    <property name="margin-bottom">4</property>
+    <property name="spacing">4</property>
+    <child>
+      <object class="HdyAvatar" id="Avatar_Message">
+        <property name="can-focus">False</property>
+        <property name="valign">start</property>
+        <property name="margin-top">4</property>
+        <property name="margin-bottom">4</property>
+        <property name="size">32</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkFrame">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label-xalign">0</property>
+        <property name="shadow-type">etched-out</property>
+        <child>
+          <object class="GtkBox" id="MessageChild">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">4</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+        </child>
+        <child type="label">
+          <object class="GtkLabel" id="OwnerName_Message">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Имя</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <style>
+      <class name="message"/>
+    </style>
+  </template>
+</interface>

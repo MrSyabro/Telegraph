@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/syabrocraft/Telegraph">
+    <file preprocess="xml-stripblanks" >ui/MainWindow.ui</file>
+    <file preprocess="xml-stripblanks" >ui/ElementChatList.ui</file>
+    <file preprocess="xml-stripblanks" >ui/AuthWindow.ui</file>
+	<file preprocess="xml-stripblanks" >ui/MessageElement.ui</file>
+  </gresource>
+</gresources>

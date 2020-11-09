@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+	<name xml:lang="ru">Телеграф</name>
+	<name xml:lang="en">Telegraph</name>
+	<shortdesc xml:lang="ru">Клиент Telegram для Gnome</shortdesc>
+	<description xml:lang="ru">
+Клиент мессенджера Telegram написаный на GTK для графического окружения Gnome.
+Приложение использует библиотку TDLib с открытым исходным кодом.
+	</description>
+	<homepage rdf:resource="https://gitlab.gnome.org/MrSyabro/Maingram/" />
+	<download-page rdf:resource="https://gitlab.gnome.org/MrSyabro/Maingram/-/releases" />
+	<bug-database rdf:resource="https://gitlab.gnome.org/MrSyabro/Maingram/issues" />
+	<category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
+	<programming-language>Vala</programming-language>
+
+	<maintainer>
+	<foaf:Person>
+		<foaf:name>Сорока Александр</foaf:name>
+		<foaf:mbox rdf:resource="mailto:syabrocraft@gmail.com" />
+		<gnome:userid>MrSyabro</gnome:userid>
+	</foaf:Person>
+	</maintainer>
+</Project>
