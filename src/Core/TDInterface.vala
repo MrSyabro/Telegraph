@@ -185,7 +185,7 @@
             else if (type == "error")
             {
 
-            	error("[TDLib]: %s", Json.to_string(data, true));
+            	warning("[TDLib]: %s", Json.to_string(data, true));
 
             }
         }

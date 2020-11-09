@@ -6,14 +6,15 @@ project('com.syabrocraft.Telegraph', ['c', 'vala', 'cpp'],
                    ],
 )
 
+
+
 conf_data = configuration_data()
 conf_data.set_quoted('PROJECT_NAME', meson.project_name())
 conf_data.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf_data.set_quoted('VERSION', meson.project_version())
 conf_data.set_quoted('PREFIX', get_option('prefix'))
-conf_data.set_quoted('TDAPI_HASH', '') # Введи тут api_hash
-conf_data.set('TDAPI_ID', '') # Введи тут api_id
-# Получить их ты сможешь на https://my.telegram.org/apps
+conf_data.set_quoted('TDAPI_HASH', get_option('api_hash'))
+conf_data.set('TDAPI_ID', get_option('api_id'))
 
 i18n = import('i18n')
 

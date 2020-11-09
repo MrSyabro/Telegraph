@@ -29,7 +29,7 @@ namespace Telegraph {
 		public Application () {
 
 			Object(application_id: Constants.PROJECT_NAME,
-				flags: ApplicationFlags.FLAGS_NONE);
+				flags: ApplicationFlags.HANDLES_OPEN);
 
 		}
 

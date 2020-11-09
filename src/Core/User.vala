@@ -27,7 +27,7 @@ namespace Telegraph
         public string? last_name { get; set; }
         public string? username { get; set; }
 
-		public signal void update(this);
+		public signal void update(User data);
         
     }
     

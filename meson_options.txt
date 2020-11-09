@@ -1,0 +1,13 @@
+option(
+	'api_id',
+	type : 'string',
+	value : '<api_id>', # Введите тут api_id вашего приложения
+	description : 'Telegram app API ID'
+)
+
+option(
+	'api_hash',
+	type : 'string',
+	value : '<api_hash>', # Введите тут api_hash вашего приложения
+	description : 'Telegram app API HASH'
+)
