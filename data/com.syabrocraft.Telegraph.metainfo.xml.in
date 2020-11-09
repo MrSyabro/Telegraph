@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
-	<id>org.syabrocraft.Telegraph.desktop</id>
+<component type="desktop-application">
+	<id>org.syabrocraft.Telegraph</id>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
 	<name>Telegraph</name>
 	<summary>GTK Telegram client</summary>
 	<description>
-		Telegram client optimized for Gnome.
+	<p>Telegram client optimized for Gnome.</p>
 	</description>
-	<provides>
-		<binary>com.syabrocraft.Telegraph</binary>
-	</provides>
+	<launchable type="desktop-id">com.syabrocraft.Telegraph.desktop</launchable>
 	<content_rating type="oars-1.1">
 		<content_attribute id="violence-cartoon">none</content_attribute>
 		<content_attribute id="violence-fantasy">none</content_attribute>
@@ -44,4 +42,14 @@
 	<url type="homepage">http://github.com/MrSyabro/Telegraph</url>
 	<url type="bugtracker">http://github.com/MrSyabro/Telegraph/issues</url>
 	<url type="help">http://github.com/MrSyabro/Telegraph/issues</url>
+	<translation type="gettext">telegraph</translation>
+	<kudos>
+		<kudo>HiDpiIcon</kudo>
+		<kudo>ModernToolkit</kudo>
+		<kudo>Notifications</kudo>
+	</kudos>
+	<custom>
+		<value key="Purism::form_factor">workstation</value>
+		<value key="Purism::form_factor">mobile</value>
+	</custom>
 </component>
