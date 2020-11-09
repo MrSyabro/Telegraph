@@ -46,6 +46,7 @@ namespace Telegraph {
 
 			Object (application: app);
 			show.connect(main_window_show);
+			this.icon = IconTheme.get_default ().load_icon (Constants.PROJECT_NAME, 48, 0);
 
 			Send_Button.clicked.connect (send_clicked);
 			ChatList_ListBox.row_activated.connect(chat_selected);

@@ -40,6 +40,8 @@ if compile_schemas.found()
   )
 endif
 
+subdir('icons')
+
 gnome = import('gnome')
 
 project_resources = gnome.compile_resources('project-resources',
