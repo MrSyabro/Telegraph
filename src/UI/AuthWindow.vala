@@ -143,6 +143,8 @@ namespace Telegraph {
                 obj.set_string_member("password", Pass_Entry.get_text());
                 node.set_object(obj);
 
+				debug ("Sending %s", Json.to_string(node, true));
+
                 Application.tdi.Send(Json.to_string(node, false));
 
 			}

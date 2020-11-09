@@ -3,20 +3,20 @@
 
 Copyright (C) MrSyabro
 
-This file is part of Maingram.
+This file is part of Telegraph.
 
-Maingram is free software: you can redistribute it and/or modify
+Telegraph is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Maingram is distributed in the hope that it will be useful,
+Telegraph is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Maingram.  If not, see <http://www.gnu.org/licenses/>.
+along with Telegraph.  If not, see <http://www.gnu.org/licenses/>.
 
 Author: MrSyabro
 
@@ -25,15 +25,16 @@ Author: MrSyabro
   <requires lib="gtk+" version="3.24"/>
   <requires lib="libhandy" version="0.0"/>
   <!-- interface-license-type gplv3 -->
-  <!-- interface-name Maingram -->
+  <!-- interface-name Telegraph -->
   <!-- interface-description GTK Telegram client -->
   <!-- interface-copyright MrSyabro -->
   <!-- interface-authors MrSyabro -->
-  <template class="MaingramAuthWindow" parent="HdyWindow">
+  <template class="TelegraphAuthWindow" parent="HdyWindow">
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="destroy-with-parent">True</property>
+    <property name="icon-name">logo</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -55,7 +56,7 @@ Author: MrSyabro
           <object class="GtkStack" id="MainStack">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="transition-type">slide-right</property>
+            <property name="transition-type">slide-left</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
