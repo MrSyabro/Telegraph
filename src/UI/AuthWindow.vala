@@ -45,25 +45,32 @@ namespace Telegraph {
 			Application.tdi.receive_message.connect(response_td);
 			Next_Button.clicked.connect(next_clicked);
 			Back_Button.clicked.connect(back_clicked);
+
 		}
 
 		void showed ()
 		{
+
 			Spinner.start();
+
 		}
 
 		void auth_request()
 		{
+
 			Spinner.stop();
 			Next_Button.set_sensitive(true);
 			Back_Button.set_sensitive(true);
+
 		}
 
 		void auth_response()
 		{
+
 			Spinner.start();
 			Next_Button.set_sensitive(false);
 			Back_Button.set_sensitive(false);
+
 		}
 
 		void response_td (string type, Json.Node data)
@@ -76,23 +83,30 @@ namespace Telegraph {
 				Json.Object auth_obj = data_obj.get_object_member("authorization_state");
 				string data_type = auth_obj.get_string_member("@type");
 
-				if (data_type == "authorizationStateWaitPhoneNumber")
-				{
+				switch (data_type){
+				case "authorizationStateWaitPhoneNumber":
+
 					MainStack.set_visible_child_name ("GetPhonePage");
 					auth_request();
-				}
-				else if (data_type == "authorizationStateWaitCode")
-				{
+
+					break;
+				case "authorizationStateWaitCode":
+
 					MainStack.set_visible_child_name ("GetCodePage");
 					auth_request();
-				}
-				else if (data_type == "authorizationStateWaitPassword")
-				{
+
+					break;
+				case "authorizationStateWaitPassword":
+
 					MainStack.set_visible_child_name ("GetPassPage");
 					auth_request();
-				}
-				else if (data_type == "authorizationStateReady"){
+
+					break;
+				case "authorizationStateReady":
+
 					close();
+
+					break;
 				}
 
 			}
@@ -101,9 +115,11 @@ namespace Telegraph {
 
 		void next_clicked()
 		{
+
 			string? page_name = MainStack.get_visible_child_name();
-			if (page_name == "GetNumberPage")
-			{
+
+			switch (page_name){
+			case "GetNumberPage":
 
 				var node = new Json.Node(Json.NodeType.OBJECT);
                 var obj = new Json.Object();
@@ -119,9 +135,8 @@ namespace Telegraph {
 
                 Application.tdi.Send(Json.to_string(node, false));
 
-			}
-			else if (page_name == "GetCodePage")
-			{
+				break;
+			case "GetCodePage":
 
 				var node = new Json.Node(Json.NodeType.OBJECT);
                 var obj = new Json.Object();
@@ -132,9 +147,8 @@ namespace Telegraph {
 
                 Application.tdi.Send(Json.to_string(node, false));
 
-			}
-			else if (page_name == "GetPassPage")
-			{
+				break;
+			case "GetPassPage":
 
 				var node = new Json.Node(Json.NodeType.OBJECT);
                 var obj = new Json.Object();
@@ -147,6 +161,7 @@ namespace Telegraph {
 
                 Application.tdi.Send(Json.to_string(node, false));
 
+				break;
 			}
 
 			auth_response();

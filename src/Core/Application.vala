@@ -46,6 +46,12 @@ namespace Telegraph {
 
 			    add_window(main_window);
 			    add_window(auth_window);
+
+			    Gtk.CssProvider css_provider = new Gtk.CssProvider ();
+				css_provider.load_from_resource ("/com/syabrocraft/Telegraph/app.css");
+				Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+
+
 			    auth_window.present();
 
 				Td_log.verbosity_level(0);

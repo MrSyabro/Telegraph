@@ -5,6 +5,8 @@
     <file compressed="true" preprocess="xml-stripblanks" >ui/ElementChatList.ui</file>
     <file compressed="true" preprocess="xml-stripblanks" >ui/AuthWindow.ui</file>
 	<file compressed="true" preprocess="xml-stripblanks" >ui/MessageElement.ui</file>
-	<file compressed="true" alias="logo">icons/com.syabrocraft.Telegraph.png</file>
+	<file alias="org.gnome.Fractal.png">icons/com.syabrocraft.Telegraph.png</file>
+	<file compressed="true" preprocess="xml-stripblanks" alias="org.gnome.Fractal.svg">icons/com.syabrocraft.Telegraph.svg</file>
+	<file>app.css</file>
   </gresource>
 </gresources>

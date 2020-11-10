@@ -143,5 +143,8 @@ Author: MrSyabro
         </child>
       </object>
     </child>
+    <style>
+      <class name="room_row"/>
+    </style>
   </template>
 </interface>

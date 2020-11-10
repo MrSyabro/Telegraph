@@ -1,0 +1,417 @@
+.rooms {
+  background-color: alpha(@borders, 0.25);
+}
+
+.notify-badge {
+  background-color: #555;
+  color: white;
+  font-weight: bold;
+  font-size: 0.8em;
+  border-radius: 10px;
+  min-width: 0.7em;
+  padding: 2px 5px;
+}
+
+.notify-highlight {
+  background-color: @theme_selected_bg_color;
+}
+
+.notify-bold {
+  font-weight: bold;
+}
+
+.room-row {
+  padding: 6px 0px;
+}
+
+.audio-box {
+  margin-top: 6px;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.noroom-title {
+  font-size: larger;
+  opacity: 0.5;
+}
+
+.noroom-description {
+  font-size: smaller;
+  opacity: 0.5;
+}
+
+.room-list list row:selected .notify-badge {
+  background-color: white;
+  color: @theme_selected_bg_color;
+}
+
+.sidebar {
+  border: none;
+}
+
+.room-avatar-container .avatar {
+  margin: 3px;
+}
+
+.room-menu {
+  padding: 0 6px;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-radius: 0;
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+.room-menu:hover:not(:backdrop) {
+  background-image: none;
+  text-shadow: none;
+}
+
+.room-title {
+  padding: 5px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid @borders;
+  margin-bottom: 5px;
+  margin-left: 4px;
+  margin-right: 4px;
+  font-weight: bold;
+  font-size: small;
+  /*color: @insensitive_fg_color;*/
+}
+
+.room-empty-text {
+  color: @insensitive_fg_color;
+  padding: 10px;
+  font-size: x-small;
+}
+
+frame.room-directory > border {
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+}
+
+.room-directory {
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+}
+
+.room-directory row:first-child {
+  -gtk-outline-top-left-radius: 9px;
+  -gtk-outline-top-right-radius: 9px;
+}
+
+.room-directory row {
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-bottom: solid 1px rgba(0,0,0, 0.1);
+}
+
+.room-directoy row:last-child {
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-bottom: none;
+}
+
+.list-with-separator row {
+  border-bottom: solid 1px rgba(0,0,0, 0.1);
+}
+
+.list-with-separator row:last-child {
+  border-bottom: none
+}
+
+.room-settings-name {
+  font-size: xx-large;
+}
+
+.room-settings-type {
+  color: @theme_selected_bg_color;
+}
+
+row:not(:selected) .member-uid {
+  color: @insensitive_fg_color;
+}
+
+.member-uid {
+  font-size: x-small;
+}
+
+.direct-chat {
+  opacity: 0.4;
+}
+
+.room-list list row:selected .direct-chat {
+  opacity: 0.5;
+}
+
+.collapsed row:selected {
+  background-color: transparent;
+}
+
+/** message history **/
+.messages-box {
+  background-color: @theme_base_color;
+}
+
+.messages-history {
+  background-color: @theme_base_color;
+  padding: 0px 18px 18px;
+}
+
+clamp.small > box > .messages-history {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.history-view {
+  background-color: @theme_base_color;
+}
+
+.messages-history > row {
+  border-radius: 9px;
+  -gtk-outline-radius: 9px;
+}
+
+.messages-history > row:not(.msg-mention) {
+  padding: 6px 9px;
+}
+
+.round-button {
+  border-radius: 9999px;
+  padding: 12px;
+  -gtk-outline-radius: 9999px;
+   min-width: 24px;
+   min-height: 24px;
+}
+
+.play-icon {
+  border-radius: 9999px;
+  -gtk-outline-radius: 9999px;
+  padding: 20px;
+}
+
+.msg-highlighted {
+    color: @theme_selected_bg_color;
+}
+
+row.msg-mention {
+  background: alpha(@theme_selected_bg_color, 0.2);
+  border-left: 3px solid @theme_selected_bg_color;
+  padding: 6px;
+  padding-right: 9px;
+  padding-left: 6px;
+}
+
+row.msg-tmp {
+  color: alpha(@theme_fg_color, 0.4);
+  background-color: alpha(@theme_bg_color, 0.8);
+  border-radius: 9px;
+}
+
+row.msg-emote {
+  font-size: small;
+  padding: 12px 0px;
+}
+
+row .username {
+  font-weight: bold;
+  font-size: small;
+}
+
+row .username,
+row.msg-emote,
+.divider {
+  color: @theme_selected_bg_color;
+}
+
+row .edit-mark {
+  opacity: 0.25;
+}
+
+.divider separator {
+  background: @theme_selected_bg_color;
+}
+
+row .timestamp {
+  font-size: small;
+}
+
+.quote {
+    border-left: 2px solid @theme_selected_bg_color;
+    color: #888A85;
+    padding-left: 6px;
+}
+
+/** media viewer **/
+.fullscreen-control-box {
+  background-color: rgba(0,0,0,.8);
+  padding: 12px;
+}
+
+.window-control-box {
+  background-color: rgba(0,0,0,.6);
+  padding: 6px;
+}
+
+/** autocomplete popover **/
+.autocomplete {
+  margin-left: 150px;
+}
+
+.autocomplete.narrow {
+  margin-left: 0;
+}
+
+.autocomplete,
+.autocomplete list,
+.autocomplete row:not(:hover):not(:selected) {
+  background-color: @theme_bg_color;
+}
+
+.autocomplete .frame {
+  border: 0;
+}
+
+.autocomplete row {
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.invite-selected,
+.invite-selected row {
+  background-color: @theme_bg_color;
+}
+
+.no_member_search {
+  padding: 12px;
+  background: @theme_base_color;
+  border-radius: 8px;
+  border: 1px solid @borders;
+}
+
+.message-input {
+  background-color: @theme_base_color;
+  border-radius: 5px;
+  border: 1px solid @borders;
+  padding: 6px;
+}
+
+.message-input-focused {
+  border: 2px solid @theme_selected_bg_color;
+  padding: 5px;
+}
+
+.messages-scroll {
+  background-color: @theme_base_color;
+  border-bottom: 1px solid @borders;
+}
+
+.message-input-area {
+  padding: 6px;
+}
+
+/*#FIXME css style to remove round corners in the header*/
+stack headerbar:last-child:not(:only-child) {
+  border-top-left-radius: 0px;
+}
+stack headerbar:first-child:not(:only-child) {
+  border-top-right-radius: 0px;
+}
+
+stack.titlebar:not(headerbar) > box > separator {
+  background-color: @borders;
+}
+
+@keyframes spin {
+  to { -gtk-icon-transform: rotate(1turn); }
+}
+
+.image-spinner {
+  background-color: @insensitive_bg_color;
+  -gtk-icon-source: -gtk-icontheme('process-working-symbolic');
+  opacity: 1;
+  animation: spin 1s linear infinite;
+}
+
+.image-widget {
+  border-radius: 6px;
+}
+
+.spinner-background {
+  background: alpha(@theme_fg_color, 0.8);
+  margin: 25px;
+  border-radius: 99999px;
+  opacity: 1;
+}
+
+.small-font {
+    font-size: small;
+}
+
+.msg-emoji {
+  font-size: 3em;
+}
+
+/* the border above the search results in the invite user/new direct message dialogs */
+.scrollarea-top-border {
+  border-top: 1px solid @borders;
+}
+
+.typing_label {
+  margin: 6px;
+  /** list-padding-left + avatar-size + row-padding * 2 **/
+  /**                18 +          40 +              18 **/
+  margin-left: 76px;
+  margin-bottom: 8px;
+  color: @theme_selected_bg_color;
+}
+
+.folded-history .typing_label {
+  /** list-padding-left + avatar-size + row-padding * 2 **/
+  /**                 6 +          40 +              18 **/
+  margin-left: 64px;
+}
+
+.badge {
+  border-radius: 5px;
+  padding: 0.1em 5px;
+  font-size: 0.8em;
+}
+.badge-circle {
+  border-radius: 99999px;
+}
+.badge-gold {
+  background-color: #E5A50A;
+}
+.badge-silver {
+  background-color: #99A8B0;
+}
+.badge-grey {
+  background-color: #D9D9D9;
+}
+
+button.forgot-password {
+  padding: 0px;
+  outline-offset: 0px;
+}
+
+.error-label {
+  color: @error_color;
+}
+
+box.folded-history
+  > overlay
+  > scrolledwindow
+  > viewport
+  > box
+  > hdycolumn
+  > box
+  > list {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+#clip-container {
+  border-radius: 6px;
+}

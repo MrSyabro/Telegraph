@@ -53,11 +53,25 @@ Author: MrSyabro
       </packing>
     </child>
     <child>
-      <object class="GtkFrame">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="label-xalign">0</property>
-        <property name="shadow-type">etched-out</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="OwnerName_Message">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Имя</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkBox" id="MessageChild">
             <property name="visible">True</property>
@@ -73,17 +87,15 @@ Author: MrSyabro
             <child>
               <placeholder/>
             </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
-        </child>
-        <child type="label">
-          <object class="GtkLabel" id="OwnerName_Message">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Имя</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
-          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
       <packing>
@@ -92,8 +104,5 @@ Author: MrSyabro
         <property name="position">1</property>
       </packing>
     </child>
-    <style>
-      <class name="message"/>
-    </style>
   </template>
 </interface>

@@ -169,6 +169,9 @@ Author: MrSyabro
                         <property name="width-request">250</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <style>
+                          <class name="room-list"/>
+                        </style>
                       </object>
                     </child>
                   </object>
@@ -184,6 +187,13 @@ Author: MrSyabro
           <packing>
             <property name="name">ChatList</property>
           </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+          </object>
         </child>
         <child>
           <object class="GtkBox">
@@ -282,8 +292,6 @@ Author: MrSyabro
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="halign">center</property>
-                <property name="margin-start">4</property>
-                <property name="margin-end">4</property>
                 <property name="hscrollbar-policy">never</property>
                 <property name="window-placement">bottom-left</property>
                 <property name="shadow-type">etched-in</property>
@@ -297,6 +305,9 @@ Author: MrSyabro
                         <property name="can-focus">False</property>
                         <property name="selection-mode">browse</property>
                         <property name="activate-on-single-click">False</property>
+                        <style>
+                          <class name="messages-history"/>
+                        </style>
                       </object>
                     </child>
                   </object>
@@ -310,7 +321,7 @@ Author: MrSyabro
             </child>
             <child>
               <object class="GtkBox">
-                <property name="width-request">750</property>
+                <property name="width-request">740</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">center</property>

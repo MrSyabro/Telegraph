@@ -162,11 +162,8 @@
 			element.content = content;
 
 			element.message_id = mess_obj.get_int_member("id");
-			element.owner_id = (int)mess_obj.get_int_member("sender_user_id");
+			element.owner = Application.users.user_get((int)mess_obj.get_int_member("sender_user_id"));
 			//element.owner_name = "Test";
-
-			var user = Application.users.user_get(element.owner_id);
-			element.owner_name = user.first_name;
 
 			messages_list.add(element);
 
