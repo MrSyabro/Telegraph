@@ -27,7 +27,7 @@ namespace Telegraph
         public string? last_name { get; set; }
         public string? username { get; set; }
 
-		public signal void update(User data);
+		public signal void update();
         
     }
     
@@ -109,12 +109,7 @@ namespace Telegraph
 					old_user.last_name = user.last_name;
 					old_user.first_name = user.first_name;
 					old_user.username = user.username;
-
-				}
-				else
-				{
-
-					list.@set(user.id, user);
+					old_user.update();
 
 				}
 

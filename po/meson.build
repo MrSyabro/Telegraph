@@ -1,1 +1,1 @@
-i18n.gettext('maingram', preset: 'glib')
+i18n.gettext('telegraph', preset: 'glib')

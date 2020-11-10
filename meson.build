@@ -1,12 +1,13 @@
 project('com.syabrocraft.Telegraph', ['c', 'vala', 'cpp'],
           version: '0.1.0',
     meson_version: '>= 0.50.0',
-  default_options: [ 'warning_level=2',
-  		     'buildtype=debugoptimized',
+  default_options: [ 	'warning_level=2',
+  		     			'buildtype=debugoptimized',
                    ],
 )
 
-
+datadir = get_option('datadir')
+telegraph_pkgdatadir = join_paths(get_option('prefix'), datadir, 'telegraph')
 
 conf_data = configuration_data()
 conf_data.set_quoted('PROJECT_NAME', meson.project_name())

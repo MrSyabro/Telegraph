@@ -1,7 +1,11 @@
 [Desktop Entry]
 Name=Telegraph
+Comment=GTK Telegram client
 Exec=com.syabrocraft.Telegraph
+Icon=com.syabrocraft.Telegraph
 Terminal=false
 Type=Application
-Categories=GTK;
+Categories=GNOME;GTK;Network;InstantMessaging;
 StartupNotify=true
+X-GNOME-UsesNotifications=true
+X-Purism-FormFactor=Workstation;Mobile;

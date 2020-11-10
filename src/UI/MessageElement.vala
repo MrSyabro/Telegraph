@@ -27,39 +27,55 @@ namespace Telegraph {
 		[GtkChild]public Label OwnerName_Message;
 		[GtkChild]public Gtk.Box MessageChild;
 
+		MessageData mess_data;
 
-		public static MessageElement create(Object data)
+		public MessageElement (MessageData data)
 		{
 
-			var mess_data = data as MessageData;
-			var element = new MessageElement();
-			element.OwnerName_Message.label = mess_data.owner_name;
-			if (mess_data.owner_id == Application.user_id)
-					element.set_halign(Align.END);
+			mess_data = data;
+			this.OwnerName_Message.label = mess_data.owner_name;
+			if (mess_data.owner.id == Application.user_id)
+					this.set_halign(Align.END);
 
-			//debug ("New message: %s", mess_data.content.get_object_member("text").get_string_member("text"));
+			create_content(mess_data.content);
 
-			switch (mess_data.content.get_string_member("@type")){
+			//mess_data.update.connect(this.update);
+			mess_data.owner.update.connect(this.update_user);
+
+		}
+
+		void create_content (Json.Object content)
+		{
+
+			switch (content.get_string_member("@type")){
 			case "messageText":
 
 				var text = new Label("Test");
 				text.set_line_wrap(true);
-				text.set_text(mess_data.content.get_object_member("text").get_string_member("text"));
-				element.MessageChild.pack_start(text, false, false, 0);
+				//text.get_style_context().add_class("quote");
+				text.set_text(content.get_object_member("text").get_string_member("text"));
+				this.MessageChild.pack_start(text, false, false, 0);
 
 				text.show();
 
 				break;
 			}
 
+		}
+
+		public static MessageElement create(Object data)
+		{
+
+			var element = new MessageElement(data as MessageData);
+
 			return element;
 
 		}
 
-		void update(MessageData mess_data)
+		void update_user()
 		{
 
-			OwnerName_Message.set_text(mess_data.owner_name);
+			OwnerName_Message.set_text(mess_data.owner.first_name);
 
 			/*switch (mess_data.content.get_string_member("@type")){
 			case "messageText":
