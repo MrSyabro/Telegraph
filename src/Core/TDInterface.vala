@@ -19,79 +19,44 @@
  namespace Telegraph
  {
 
- 	public class AsyncResponse : Object
- 	{
- 		public string response { set; get; }
+ 	delegate void CallbackType (Json.Node data);
 
- 		public AsyncResponse (string resp)
- 		{
- 			response = resp;
- 		}
+ 	class TDIRequest : Object
+ 	{
+
+		public string? response_type { get; private set; }
+		public Json.Node? request_data { get; private set; }
+		public CallbackType callback { get; private set;}
+		public bool online { get; private set; default = false; }
+		// TODO: public int? timeout { get; set; }
+
+		public TDIRequest (string? response_type, Json.Node? request, CallbackType callback, bool online)
+		{
+
+			response_type = response_type;
+			request_data = request;
+			callback = callback;
+			online = obline;
+
+		}
+
  	}
 
-    class TDI : Object
-    {
+ 	class TDIClient : Object
+ 	{
 
-        static void* client;
-        Json.Node response_node;
-        bool tdlib_loop_stop = true;
-        //FileOutputStream log_os;
+ 		public void* client { get; set; }
+        public bool loop_stop { get; set; default = false; }
+        public int client_uid { get; set; }
+        public bool pending_requests { get; set; }
+        public Thread<void> client_thread;
+        public Gee.ArrayList<TDIQueue> request_queue;
+        uint offline_count { get; set; }
 
-		AsyncQueue<string> async_response;
+		public thread_func()
+		{
 
-
-        // Ключ шифрования кеша базы данных. Временная мера.
-        // TODO: Добавить генерацию и хранение ключа в хранилище Gnome
-        string key = "MHcCAQEEIL4v10M//RqtlAglGrBCeB6snkyUxJH3+jid8MazaHiSoAoGCCqGSM49AwEHoUQDQgAEcEiPXejEv49kLtscGah+eyyHYsnHhYF2EskrNAsoYbiYVkmpQxNgeJojoPRyeM+2IrTH4QFcrNG6zoTelzI1TQ==";
-
-        public TDI()
-        {
-
-            client = Td_json.client_create();
-            async_response = new AsyncQueue<string> ();
-
-            this.receive_message.connect(sendTdlibParameters);
-
-            //File log_file = File.new_for_path("tdlib.log");
-            //log_os = log_file.create (FileCreateFlags.PRIVATE);
-        }
-
-        public void Run()
-        {
-
-        	new Thread<void> ("TDLib_thread", update);
-        	//new Thread<void> ("TDLib_resonse", update_response);
-
-        	new MainLoop().run();
-
-        	/*MainLoop tdlib_loop = new MainLoop();
-            update.begin((obj, res) => {
-                    update.end(res);
-                    tdlib_loop.quit();
-                });
-            tdlib_loop.run();*/
-
-			/*MainLoop tdlib_resp_loop = new MainLoop();
-            update_response.begin((obj, res) => {
-                    update_response.end(res);
-                    tdlib_resp_loop.quit();
-                });
-            tdlib_resp_loop.run();*/
-
-
-        }
-
-        public void Disconnect()
-        {
-        	tdlib_loop_stop = false;
-        	//tdlib_loop.quit();
-            Td_json.client_destroy(client);
-        }
-
-        void update()
-        {
-
-        	var timer = new Timer ();
+			var timer = new Timer ();
         	timer.start ();
 
         	const double TIMEOUT = 10.0;
@@ -106,7 +71,6 @@
 
 					receive_message_idle_func(response);
 
-                    
 	            }
 
 	            Thread.usleep(100);
@@ -114,80 +78,191 @@
 	        }
 
 			return;
-        }
 
-        void receive_message_idle_func (string data)
+		}
+
+		void receive_message_idle_func (string data)
         {
-            
-            GLib.Idle.add (() => {
-                response_node = Json.from_string(data);
-                Json.Object? json_object = response_node.get_object();
-                string response_type = json_object.get_string_member("@type");
 
-                receive_message(response_type, response_node);
+            GLib.Idle.add (() => {
+
+				var root_node = Json.from_string(data);
+				var root_obj = root_node.get_object();
+				string response_type = root_obj.get_string_member("@type");
+
+                foreach (TDIRequest request in request_queue)
+                {
+
+					if (response_type == request.response_type)
+					{
+
+						request.callback(root_node);
+						if (!request.online) assert(request_queue.remove(request));
+
+					}
+
+                }
 
                 return false;
             });
 
         }
 
-        public signal void receive_message (string type, Json.Node message);
+        public signal void requests_pending (bool stats);
 
-        public Json.Node Execute (string message)
+ 	}
+
+    static class TDI
+    {
+
+        // Ключ шифрования кеша базы данных. Временная мера.
+        // TODO: Добавить генерацию и хранение ключа в хранилище Gnome
+        public static string key = "MHcCAQEEIL4v10M//RqtlAglGrBCeB6snkyUxJH3+jid8MazaHiSoAoGCCqGSM49AwEHoUQDQgAEcEiPXejEv49kLtscGah+eyyHYsnHhYF2EskrNAsoYbiYVkmpQxNgeJojoPRyeM+2IrTH4QFcrNG6zoTelzI1TQ==";
+
+		public static TDIClient? default_client;
+
+		public TDIClient create_client(int client_uid)
+		{
+
+			var client = new TDLClient();
+			client.request_queue = new Gee.ArrayList<TDIQueue> ();
+
+			client.client_uid = client_uid;
+			client.client = Td_json.client_create();
+
+			if (default_client == null) default_client = client;
+
+			var tdidata_request = new TDIRequest("updateAuthorizationState", null, TDI.get_data_request, false);
+			var tdierr_request = new TDIRequest("error", null, TDI.receive_errors, true);
+
+			TDI.send_request(null, tdidata_request);
+			TDI.send_request(null, tdierr_request);
+
+		}
+
+        public static void client_run(TDIClient? client)
         {
+			assert(client ?? this.client);
+			var temp = client ?? this.client;
+
+        	temp.client_thread = new Thread<void> (string.join("_","TDLib_thread", temp.client_uid.to_string()), temp.thread_func);
+
+        	new MainLoop().run();
+
+        }
+
+        public static void client_stop(TDIClient? client)
+        {
+
+        	assert(client ?? this.client);
+			var temp = client ?? this.client;
+
+        	temp.loop_stop = false;
+            Td_json.client_destroy(temp.client);
+
+        }
+
+        /*public Json.Node Execute (string message)
+        {
+
             return Json.from_string(Td_json.client_execute(client, message));
-        }
 
-        public void Send (string message)
-        {
-            Td_json.client_send(client, message);
-        }
+        }*/
 
-        void sendTdlibParameters(string type, Json.Node data)
+        public static void send_request (TDClient? client, TDIRequest request)
         {
-            if (type == "updateAuthorizationState")
+
+        	assert(client ?? this.client);
+			var temp = client ?? this.client;
+
+            if (request.request_data != null)
             {
+
+            	Td_json.client_send(temp.client, Json.to_string(request.request_data, false));
+            	request.request_data = null;
+
+            }
+
+            if (request.response_type != null)
+            {
+
+            	temp.request_queue.add(request);
+
+            }
+
+        }
+
+        public static void delete_request (TDIclient? client, TDIRequest request)
+        {
+
+        	assert(client ?? this.client);
+			var temp = client ?? this.client;
+
+			assert(temp.request_queue.remove(request));
+
+        }
+
+        static void get_data_request(Json.Node data)
+        {
+            var resp_obj = data.get_object();
+            var auth_obj = resp_obj.get_object_member("authorization_state");
+            var auth_st = auth_obj.get_string_member("@type");
+
+            if (auth_st == "authorizationStateWaitTdlibParameters")
+            {
+
                 var node = new Json.Node(Json.NodeType.OBJECT);
-                var obj = new Json.Object();
+           		var obj = new Json.Object();
+           		var parameters_obj = new Json.Object();
 
-                var resp_obj = data.get_object();
-                var auth_obj = resp_obj.get_object_member("authorization_state");
-                var auth_st = auth_obj.get_string_member("@type");
+                obj.set_string_member("@type", "setTdlibParameters");
+                parameters_obj.set_string_member("database_directory", Environment.get_user_data_dir() + "/" + Constants.PROJECT_NAME);
+                parameters_obj.set_string_member("files_directory", Environment.get_user_cache_dir() + "/" + Constants.PROJECT_NAME);
+                parameters_obj.set_boolean_member("use_message_database", true);
+                parameters_obj.set_boolean_member("use_secret_chats",false);
+                parameters_obj.set_int_member ("api_id", Constants.API_ID);
+                parameters_obj.set_string_member("api_hash", Constants.API_HASH);
+                parameters_obj.set_string_member("system_language_code", "en-UK");
+                parameters_obj.set_string_member("device_model", "Desktop");
+                parameters_obj.set_string_member("system_version", Environment.get_os_info("PRETTY_NAME"));
+                parameters_obj.set_string_member("application_version", Constants.VERSION);
+                obj.set_object_member("parameters", parameters_obj);
+                node.set_object(obj);
 
-                if (auth_st == "authorizationStateWaitTdlibParameters")
-                {
-                    obj.set_string_member("@type", "setTdlibParameters");
-                    var parameters_obj = new Json.Object();
-                    parameters_obj.set_string_member("database_directory", Environment.get_user_data_dir() + "/" + Constants.PROJECT_NAME);
-                    parameters_obj.set_string_member("files_directory", Environment.get_user_cache_dir() + "/" + Constants.PROJECT_NAME);
-                    parameters_obj.set_boolean_member("use_message_database", true);
-                    parameters_obj.set_boolean_member("use_secret_chats",false);
-                    parameters_obj.set_int_member ("api_id", Constants.API_ID);
-                    parameters_obj.set_string_member("api_hash", Constants.API_HASH);
-                    parameters_obj.set_string_member("system_language_code", "en-UK");
-                    parameters_obj.set_string_member("device_model", "Desktop");
-                    parameters_obj.set_string_member("system_version", Environment.get_os_info("PRETTY_NAME"));
-                    parameters_obj.set_string_member("application_version", Constants.VERSION);
-                    obj.set_object_member("parameters", parameters_obj);
-                    node.set_object(obj);
-                    string mess = Json.to_string(node, false);
-                    Send(mess);
-                }
-                else if (auth_st == "authorizationStateWaitEncryptionKey")
-                {
-                    obj.set_string_member("@type", "checkDatabaseEncryptionKey");
-                    obj.set_string_member("encryption_key", key);
-                    node.set_object(obj);
-                    string mess = Json.to_string(node, false);
-                    Send(mess);
-                }
+                var tdidata_request = new TDIRequest("updateAuthorizationState", node, TDI.get_crypt_key, false);
+                TDI.send_request(null, tdidata_request);
             }
-            else if (type == "error")
+
+        }
+
+        static void get_crypt_key (Json.Node data)
+        {
+
+            var resp_obj = data.get_object();
+            var auth_obj = resp_obj.get_object_member("authorization_state");
+            var auth_st = auth_obj.get_string_member("@type");
+
+			if (auth_st == "authorizationStateWaitEncryptionKey")
             {
 
-            	warning("[TDLib]: %s", Json.to_string(data, true));
+            	var node = new Json.Node(Json.NodeType.OBJECT);
+            	var obj = new Json.Object();
+
+                obj.set_string_member("@type", "checkDatabaseEncryptionKey");
+                obj.set_string_member("encryption_key", TDI.key);
+                node.set_object(obj);
+
+                TDI.send_request(null, node);
 
             }
+
+        }
+
+        static receive_errors (Json.Node data)
+        {
+
+			warning("[TDLib error]%s", Json.to_string(data, true));
+
         }
     }
 }
