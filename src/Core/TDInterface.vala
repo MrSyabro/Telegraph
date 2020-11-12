@@ -19,24 +19,25 @@
  namespace Telegraph
  {
 
- 	delegate void CallbackType (Json.Node data);
+ 	delegate bool? CallbackType (Json.Node data);
 
  	class TDIRequest : Object
  	{
 
-		public string? response_type { get; private set; }
-		public Json.Node? request_data { get; private set; }
-		public CallbackType callback { get; private set;}
-		public bool online { get; private set; default = false; }
+		public string? response_type { get; set; }
+		public Json.Node? request_data { get; set; }
+		public CallbackType? callback { get; set;}
+		public bool online { get; set; default = false; }
 		// TODO: public int? timeout { get; set; }
 
-		public TDIRequest (string? response_type, Json.Node? request, CallbackType callback, bool online)
+		public TDIRequest (string? response_type, Json.Node? request, CallbackType? callback, bool online)
 		{
 
-			response_type = response_type;
-			request_data = request;
-			callback = callback;
-			online = obline;
+			this.response_type = response_type;
+			this.request_data = request;
+			if (this.response_type != null)
+				this.callback = callback;
+			this.online = online;
 
 		}
 
@@ -50,10 +51,10 @@
         public int client_uid { get; set; }
         public bool pending_requests { get; set; }
         public Thread<void> client_thread;
-        public Gee.ArrayList<TDIQueue> request_queue;
-        uint offline_count { get; set; }
+        public Gee.ArrayList<TDIRequest> request_queue;
+        public uint offline_count { get; set; default = 0; }
 
-		public thread_func()
+		public void thread_func()
 		{
 
 			var timer = new Timer ();
@@ -61,7 +62,7 @@
 
         	const double TIMEOUT = 10.0;
 
-        	while(tdlib_loop_stop)
+        	while(!loop_stop)
 	        {
 
 	            string response = Td_json.client_receive(client, TIMEOUT);
@@ -69,6 +70,7 @@
 	            if (response != null && response != "(null)")
 	            {
 
+					//debug(response);
 					receive_message_idle_func(response);
 
 	            }
@@ -90,18 +92,39 @@
 				var root_obj = root_node.get_object();
 				string response_type = root_obj.get_string_member("@type");
 
-                foreach (TDIRequest request in request_queue)
+                for (int i = 0; i < request_queue.size; i++)
                 {
+
+                	var request = request_queue.@get(i);
+
+					//debug ("Received [%s] == [%s]", response_type, request.response_type);
 
 					if (response_type == request.response_type)
 					{
 
-						request.callback(root_node);
-						if (!request.online) assert(request_queue.remove(request));
+						bool del = request.callback(root_node);
+						if (!request.online)
+						{
+
+							assert(request_queue.remove(request));
+							offline_count--;
+
+							requests_pending (offline_count > 0);
+							//size--;
+
+						}
+						else if (del == true)
+						{
+
+							assert(request_queue.remove(request));
+
+						}
 
 					}
 
                 }
+
+                //debug ("Requests in queue %s", request_queue.size.to_string());
 
                 return false;
             });
@@ -112,7 +135,7 @@
 
  	}
 
-    static class TDI
+    class TDI
     {
 
         // Ключ шифрования кеша базы данных. Временная мера.
@@ -121,29 +144,31 @@
 
 		public static TDIClient? default_client;
 
-		public TDIClient create_client(int client_uid)
+		public static TDIClient create_client(int client_uid)
 		{
 
-			var client = new TDLClient();
-			client.request_queue = new Gee.ArrayList<TDIQueue> ();
+			var client = new TDIClient();
+			client.request_queue = new Gee.ArrayList<TDIRequest> ();
 
 			client.client_uid = client_uid;
 			client.client = Td_json.client_create();
 
 			if (default_client == null) default_client = client;
 
-			var tdidata_request = new TDIRequest("updateAuthorizationState", null, TDI.get_data_request, false);
+			var tdidata_request = new TDIRequest("updateAuthorizationState", null, TDI.get_data_request, true);
 			var tdierr_request = new TDIRequest("error", null, TDI.receive_errors, true);
 
 			TDI.send_request(null, tdidata_request);
 			TDI.send_request(null, tdierr_request);
 
+			return client;
+
 		}
 
         public static void client_run(TDIClient? client)
         {
-			assert(client ?? this.client);
-			var temp = client ?? this.client;
+			assert((client ?? TDI.default_client) != null);
+			var temp = client ?? TDI.default_client;
 
         	temp.client_thread = new Thread<void> (string.join("_","TDLib_thread", temp.client_uid.to_string()), temp.thread_func);
 
@@ -154,8 +179,8 @@
         public static void client_stop(TDIClient? client)
         {
 
-        	assert(client ?? this.client);
-			var temp = client ?? this.client;
+        	assert((client ?? TDI.default_client) != null);
+			var temp = client ?? TDI.default_client;
 
         	temp.loop_stop = false;
             Td_json.client_destroy(temp.client);
@@ -169,11 +194,11 @@
 
         }*/
 
-        public static void send_request (TDClient? client, TDIRequest request)
+        public static void send_request (TDIClient? client, TDIRequest request)
         {
 
-        	assert(client ?? this.client);
-			var temp = client ?? this.client;
+        	assert((client ?? TDI.default_client) != null);
+			var temp = client ?? TDI.default_client;
 
             if (request.request_data != null)
             {
@@ -188,21 +213,32 @@
 
             	temp.request_queue.add(request);
 
+            	//debug ("Added request %s", request.response_type);
+
+            }
+
+
+            if (!request.online)
+            {
+
+            	temp.offline_count++;
+            	temp.requests_pending (true);
+
             }
 
         }
 
-        public static void delete_request (TDIclient? client, TDIRequest request)
+        public static void delete_request (TDIClient? client, TDIRequest request)
         {
 
-        	assert(client ?? this.client);
-			var temp = client ?? this.client;
+        	assert((client ?? TDI.default_client) != null);
+			var temp = client ?? TDI.default_client;
 
 			assert(temp.request_queue.remove(request));
 
         }
 
-        static void get_data_request(Json.Node data)
+        static bool? get_data_request(Json.Node data)
         {
             var resp_obj = data.get_object();
             var auth_obj = resp_obj.get_object_member("authorization_state");
@@ -229,18 +265,25 @@
                 obj.set_object_member("parameters", parameters_obj);
                 node.set_object(obj);
 
-                var tdidata_request = new TDIRequest("updateAuthorizationState", node, TDI.get_crypt_key, false);
+                var tdidata_request = new TDIRequest("updateAuthorizationState", node, TDI.get_crypt_key, true);
                 TDI.send_request(null, tdidata_request);
+
+                return true;
+
             }
+
+            return false;
 
         }
 
-        static void get_crypt_key (Json.Node data)
+        static bool? get_crypt_key (Json.Node data)
         {
 
             var resp_obj = data.get_object();
             var auth_obj = resp_obj.get_object_member("authorization_state");
             var auth_st = auth_obj.get_string_member("@type");
+
+            //debug ("Received if crypt_key %s", auth_st);
 
 			if (auth_st == "authorizationStateWaitEncryptionKey")
             {
@@ -252,16 +295,21 @@
                 obj.set_string_member("encryption_key", TDI.key);
                 node.set_object(obj);
 
-                TDI.send_request(null, node);
+                TDI.send_request(null, new TDIRequest(null, node, null, false));
+
+				return true;
 
             }
 
+            return false;
+
         }
 
-        static receive_errors (Json.Node data)
+        static bool? receive_errors (Json.Node data)
         {
 
 			warning("[TDLib error]%s", Json.to_string(data, true));
+			return null;
 
         }
     }

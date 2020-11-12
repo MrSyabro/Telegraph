@@ -28,11 +28,16 @@ namespace Telegraph {
 		[GtkChild]public Gtk.Box MessageChild;
 
 		MessageData mess_data;
+		//TDIRequest confirm_request;
 
 		public MessageElement (MessageData data)
 		{
 
 			mess_data = data;
+
+			if (data.pending)
+				TDI.send_request (null, new TDIRequest("updateMessageSendSucceeded", null, confirm_message, true));
+
 			this.OwnerName_Message.label = mess_data.owner_name;
 			if (mess_data.owner.id == Application.user_id)
 					this.set_halign(Align.END);
@@ -40,7 +45,7 @@ namespace Telegraph {
 			create_content(mess_data.content);
 
 			//mess_data.update.connect(this.update);
-			mess_data.owner.update.connect(this.update_user);
+			//mess_data.owner.update.connect(this.update_user);
 
 		}
 
@@ -69,6 +74,25 @@ namespace Telegraph {
 			var element = new MessageElement(data as MessageData);
 
 			return element;
+
+		}
+
+		bool? confirm_message (Json.Node data)
+		{
+
+			var data_obj = data.get_object();
+
+			if (mess_data.message_id == data_obj.get_int_member("old_message_id"))
+			{
+
+				mess_data.message_id = data_obj.get_object_member("message").get_int_member("id");
+				mess_data.pending = false;
+
+				return true;
+
+			}
+
+			return false;
 
 		}
 
