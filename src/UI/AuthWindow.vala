@@ -35,6 +35,8 @@ namespace Telegraph {
 
 		[GtkChild]Gtk.Spinner Spinner;
 
+		TDIRequest tdi_request;
+
 
 		public AuthWindow (Gtk.Application app)
 		{
@@ -42,7 +44,8 @@ namespace Telegraph {
 			Object (application: app);
 
 			show.connect(showed);
-			Application.tdi.receive_message.connect(response_td);
+			tdi_request = new TDIRequest("updateAuthorizationState", null, update_auth_state, true);
+
 			Next_Button.clicked.connect(next_clicked);
 			Back_Button.clicked.connect(back_clicked);
 
@@ -52,6 +55,7 @@ namespace Telegraph {
 		{
 
 			Spinner.start();
+			TDI.send_request(null, tdi_request);
 
 		}
 
@@ -73,43 +77,44 @@ namespace Telegraph {
 
 		}
 
-		void response_td (string type, Json.Node data)
+		bool? update_auth_state (Json.Node data)
 		{
 
-			if (type == "updateAuthorizationState")
-			{
+			Json.Object data_obj = data.get_object();
+			Json.Object auth_obj = data_obj.get_object_member("authorization_state");
+			string data_type = auth_obj.get_string_member("@type");
 
-				Json.Object data_obj = data.get_object();
-				Json.Object auth_obj = data_obj.get_object_member("authorization_state");
-				string data_type = auth_obj.get_string_member("@type");
+			//debug("Received %s", data_type);
 
-				switch (data_type){
-				case "authorizationStateWaitPhoneNumber":
+			switch (data_type){
+			case "authorizationStateWaitPhoneNumber":
 
-					MainStack.set_visible_child_name ("GetPhonePage");
-					auth_request();
+				MainStack.set_visible_child_name ("GetPhonePage");
+				auth_request();
 
-					break;
-				case "authorizationStateWaitCode":
+				break;
+			case "authorizationStateWaitCode":
 
-					MainStack.set_visible_child_name ("GetCodePage");
-					auth_request();
+				MainStack.set_visible_child_name ("GetCodePage");
+				auth_request();
 
-					break;
-				case "authorizationStateWaitPassword":
+				break;
+			case "authorizationStateWaitPassword":
 
-					MainStack.set_visible_child_name ("GetPassPage");
-					auth_request();
+				MainStack.set_visible_child_name ("GetPassPage");
+				auth_request();
 
-					break;
-				case "authorizationStateReady":
+				break;
+			case "authorizationStateReady":
 
-					close();
+				//this.close();
 
-					break;
-				}
+				return true;
 
+				break;
 			}
+
+			return false;
 
 		}
 
@@ -133,7 +138,7 @@ namespace Telegraph {
                 obj.set_object_member("settings", sett_obj);
                 node.set_object(obj);
 
-                Application.tdi.Send(Json.to_string(node, false));
+                TDI.send_request(null, new TDIRequest(null, node, null, false));
 
 				break;
 			case "GetCodePage":
@@ -145,7 +150,7 @@ namespace Telegraph {
                 obj.set_string_member("code", Code_Entry.get_text());
                 node.set_object(obj);
 
-                Application.tdi.Send(Json.to_string(node, false));
+                TDI.send_request(null, new TDIRequest(null, node, null, false));
 
 				break;
 			case "GetPassPage":
@@ -157,9 +162,9 @@ namespace Telegraph {
                 obj.set_string_member("password", Pass_Entry.get_text());
                 node.set_object(obj);
 
-				debug ("Sending %s", Json.to_string(node, true));
+				//debug ("Sending %s", Json.to_string(node, true));
 
-                Application.tdi.Send(Json.to_string(node, false));
+                TDI.send_request(null, new TDIRequest(null, node, null, false));
 
 				break;
 			}

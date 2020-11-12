@@ -39,8 +39,9 @@ namespace Telegraph
     	public Users ()
     	{
 
-    		list = new Gee.TreeMap<int, User> ();
-    		Application.tdi.receive_message.connect(receive_td);
+			list = new Gee.TreeMap<int, User> ();
+			
+			TDI.send_request (null, new TDIRequest("user", null, receive_user, true));
 
     	}
 
@@ -74,6 +75,7 @@ namespace Telegraph
 
 				var data = new User();
 				data.id = id;
+				list.@set(id, data);
 
 				var node = new Json.Node(Json.NodeType.OBJECT);
 				var obj = new Json.Object();
@@ -81,9 +83,7 @@ namespace Telegraph
 				obj.set_int_member("user_id", id);
 				node.set_object(obj);
 
-				Application.tdi.Send(Json.to_string(node, false));
-
-				list.@set(id, data);
+				TDI.send_request (null, new TDIRequest(null, node, null, false));
 
 				debug("User [%s] getting in TDLib.", data.id.to_string());
 
@@ -93,30 +93,29 @@ namespace Telegraph
 
     	}
 
-    	void receive_td (string type, Json.Node data)
+    	bool? receive_user (Json.Node data)
     	{
 
-			var data_obj = data.get_object();
-    		switch (type){
-    		case "user":
+    		//var data_obj = data.get_object();
 
-				User user = Json.gobject_deserialize (typeof(User), data) as User;
+			User user = Json.gobject_deserialize (typeof(User), data) as User;
+			
+			debug ("Received user data ID=%s", user.id.to_string());
 
-				if (list.has_key(user.id))
-				{
+			if (list.has_key(user.id))
+			{
 
-					var old_user = list.@get(user.id);
-					old_user.last_name = user.last_name;
-					old_user.first_name = user.first_name;
-					old_user.username = user.username;
-					old_user.update();
+				var old_user = list.@get(user.id);
+				old_user.last_name = user.last_name;
+				old_user.first_name = user.first_name;
+				old_user.username = user.username;
+				old_user.update();
 
-				}
+			}
 
-				debug("User [%s] updaed from TDLib.", user.id.to_string());
+			debug("User [%s] updaed from TDLib.", user.id.to_string());
 
-    			break;
-    		}
+			return false;
 
     	}
 

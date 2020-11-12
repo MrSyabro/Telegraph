@@ -33,6 +33,8 @@ namespace Telegraph {
 
 		[GtkChild]ListBox MessageList_ListBox; // Переписка
 
+		[GtkChild]Spinner request_pending;
+
 		int64? selected_chat;
 		MessageData selected_message;
 
@@ -51,8 +53,6 @@ namespace Telegraph {
 			Send_Button.clicked.connect (send_clicked);
 			ChatList_ListBox.row_activated.connect(chat_selected);
 
-			//ChatList_ListStore = new GLib.ListStore(typeof(ChatID));
-
 		}
 
 		public void main_window_show() {
@@ -67,20 +67,19 @@ namespace Telegraph {
 			//ChatList_ListBox.bind_model(chat_list, ElementChatList.create);
 			MessageList_ListBox.bind_model(messages_list, MessageElement.create);
 
-			Application.tdi.receive_message.connect (receive_td);
+			//Application.tdi.receive_message.connect (receive_td);
 
-			this.destroy.connect(Application.tdi.Disconnect);
+			this.destroy.connect(() => {TDI.client_stop(null);});
 
-			/*var node = new Json.Node (Json.NodeType.OBJECT);
-			var obj = new Json.Object ();
+		}
 
-			obj.set_string_member ("@type", "getMe");
+		public void request_pending_cb (bool pending)
+		{
 
-			node.set_object(obj);
-
-			debug("Sending: %s", Json.to_string(node, true));
-
-			Application.tdi.Send(Json.to_string(node, false));*/
+			if (pending)
+				request_pending.start();
+			else
+				request_pending.stop();
 
 		}
 
@@ -96,7 +95,8 @@ namespace Telegraph {
 				obj.set_int_member("chat_id", selected_chat);
 				node.set_object(obj);
 
-				Application.tdi.Send(Json.to_string(node, false));
+				TDI.send_request(null, new TDIRequest(null, node, null, false));
+
 			}
 
 			ElementChatList data = row as ElementChatList;
@@ -109,11 +109,9 @@ namespace Telegraph {
 			obj.set_int_member("chat_id", selected_chat);
 			node.set_object(obj);
 
-			Application.tdi.Send(Json.to_string(node, false));
+			TDI.send_request(null, new TDIRequest(null, node, null, false));
 
 			messages_list.select_chat(selected_chat);
-
-
 
 		}
 
@@ -137,7 +135,7 @@ namespace Telegraph {
 
 			debug("Sending: %s", Json.to_string(node, true));
 
-			Application.tdi.Send(Json.to_string(node, false));
+			TDI.send_request(null, new TDIRequest(null, node, null, false));
 
 			Message_Entry.set_text("");
 
@@ -164,10 +162,6 @@ namespace Telegraph {
 				debug ("Sending notification ID = %s", Json.to_string(data, true));
 
 				//application.send_notification(mess_obj.get_int_member("id").to_string(), not);*/
-				break;
-			case "user":
-
-
 				break;
 			}
 
