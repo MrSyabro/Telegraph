@@ -26,8 +26,9 @@ namespace Telegraph
 		public string owner_name { get; set; }
 		public User owner { get; set; }
 		public Json.Object content { get; set; }
+		public bool pending { get; set; default = false; }
 
-		public signal void update(MessageData data);
+		//public signal void update(MessageData data);
 
     }
 

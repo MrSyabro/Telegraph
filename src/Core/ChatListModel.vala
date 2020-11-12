@@ -32,7 +32,7 @@
 
 			chat_list.set_sort_func(ChatList_sort_func);
 
-			Application.tdi.receive_message.connect (receive_td);
+			//Application.tdi.receive_message.connect (receive_td);
 
 			var node = new Json.Node (Json.NodeType.OBJECT);
 			var obj = new Json.Object ();
@@ -43,43 +43,41 @@
 			node.set_object (obj);
 
 			//debug ("%s", "Geting 100 chats wich offset");
-			Application.tdi.Send (Json.to_string (node, false));
+			TDI.send_request(null, new TDIRequest("chats", node, receive_chats, false));
+
+			//TDI.send_request("chat", node, receive_chat_data, true);
 
  		}
 
- 		public void receive_td (string type, Json.Node data)
- 		{
-
+		bool? receive_chats (Json.Node data)
+		{
 			var data_obj = data.get_object ();
-			switch (type){
-			case "chats":
 
-				debug("Received chats list.");
+			debug("Received chats list.");
 
-				var data_arr = data_obj.get_array_member ("chat_ids");
-				data_arr.foreach_element(foreach_chats);
+			var data_arr = data_obj.get_array_member ("chat_ids");
+			data_arr.foreach_element(foreach_chats);
 
-				break;
-			case "chat":
-			case "updateChatLastMessage":
-			case "updateChatOrder":
-				receive_chat_data (type, data);
-				chat_list.invalidate_sort ();
-				break;
-			}
+			return false;
 
- 		}
+		}
+
+		/*void receive_chat_data (Json.Node data)
+		{
+
+			//receive_chat_data (type, data);
+			chat_list.invalidate_sort ();
+
+		}*/
 
  		void foreach_chats (Json.Array arr, uint index, Json.Node node)
 		{
 
 			int64 id = node.get_int();
 			var element = new ElementChatList(id);
-			receive_chat_data.connect (element.update);
+			//receive_chat_data.connect (element.update);
 
 			chat_list.prepend(element);
-
-			//chat_list.show_all();
 
 		}
 
@@ -105,8 +103,6 @@
 
 		}
 
-		signal void receive_chat_data(string type, Json.Node data);
-
  	}
 
- }
+}

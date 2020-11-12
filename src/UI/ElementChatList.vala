@@ -35,18 +35,15 @@ namespace Telegraph {
 
 			this.id = chat_id;
 
-			//custom_header = new ElementChatList();
-			//set_header(custom_header);
-
 			var node = new Json.Node(Json.NodeType.OBJECT);
 			var obj = new Json.Object();
 			obj.set_string_member("@type", "getChat");
 			obj.set_int_member("chat_id", chat_id);
 			node.set_object(obj);
 
-			//debug (Json.to_string(node, false));
-
-			Application.tdi.Send(Json.to_string(node, false));
+			TDI.send_request(null, new TDIRequest("chat", node, receive_chat, true));
+			TDI.send_request(null, new TDIRequest("updateChatOrder", null, receive_order, true));
+			TDI.send_request(null, new TDIRequest("updateChatLastMessage", null, receive_last_message, true));
 
 		}
 
@@ -65,46 +62,60 @@ namespace Telegraph {
 
 		}
 
-        public void update (string type, Json.Node data)
-        {
+		bool? receive_chat (Json.Node data)
+		{
 
-        	var data_obj = data.get_object();
+			var data_obj = data.get_object();
 
-        	switch (type){
-        	case "chat":
-				if (data_obj.get_int_member("id") == this.id)
-		    	{
+			if (data_obj.get_int_member("id") == this.id)
+	    	{
 
-		    		Name_ChatListElement.set_text(data_obj.get_string_member("title"));
-					var message = data_obj.get_object_member("last_message");
-					set_last_message(message);
-					this.order = data_obj.get_string_member("order").to_int64();
+	    		Name_ChatListElement.set_text(data_obj.get_string_member("title"));
+				var message = data_obj.get_object_member("last_message");
+				set_last_message(message);
+				this.order = data_obj.get_string_member("order").to_int64();
 
-		    	}
-        		break;
-			case "updateChatOrder":
-				if (data_obj.get_int_member("chat_id") == this.id)
-				{
+	    	}
 
-					//debug ("Getted updateChatOrder respnse: %s", Json.to_string(data, true));
-					this.order = data_obj.get_string_member("order").to_int64();
+	    	return false;
 
-				}
-				break;
-			case "updateChatLastMessage":
-				if (data_obj.get_int_member("chat_id") == this.id)
-				{
+		}
 
-					debug ("Getting LastMessage: ID = %s; Order = %ld(%s)", data_obj.get_int_member("chat_id").to_string(), data_obj.get_string_member("order").to_long(), data_obj.get_string_member("order"));
-					var mess_obj = data_obj.get_object_member("last_message");
-					set_last_message(mess_obj);
-					this.order = data_obj.get_string_member("order").to_int64();
+		bool? receive_order (Json.Node data)
+		{
 
-				}
-        		break;
-        	}
+			var data_obj = data.get_object();
 
-        }
+			if (data_obj.get_int_member("chat_id") == this.id)
+			{
+
+				//debug ("Getted updateChatOrder respnse: %s", Json.to_string(data, true));
+				this.order = data_obj.get_string_member("order").to_int64();
+
+			}
+
+			return false;
+
+		}
+
+		bool? receive_last_message (Json.Node data)
+		{
+
+			var data_obj = data.get_object();
+
+			if (data_obj.get_int_member("chat_id") == this.id)
+			{
+
+				debug ("Getting LastMessage: ID = %s; Order = %ld(%s)", data_obj.get_int_member("chat_id").to_string(), data_obj.get_string_member("order").to_long(), data_obj.get_string_member("order"));
+				var mess_obj = data_obj.get_object_member("last_message");
+				set_last_message(mess_obj);
+				this.order = data_obj.get_string_member("order").to_int64();
+
+			}
+
+			return false;
+
+		}
 
 	}
 

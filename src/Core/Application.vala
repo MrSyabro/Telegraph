@@ -37,12 +37,15 @@ namespace Telegraph {
 
 			try {
 
-				tdi = new Telegraph.TDI();
+				var client = TDI.create_client(1);
 				main_window = new MainWindow (this);
 				auth_window = new AuthWindow (this);
 				users = new Users();
 
-				tdi.receive_message.connect(receive_td);
+				client.requests_pending.connect(main_window.request_pending_cb);
+
+				TDI.send_request(null, new TDIRequest("updateAuthorizationState", null, auth_ready, true));
+				TDI.send_request(null, new TDIRequest("updateOption", null, update_myid_opt, true));
 
 			    add_window(main_window);
 			    add_window(auth_window);
@@ -51,14 +54,13 @@ namespace Telegraph {
 				css_provider.load_from_resource ("/com/syabrocraft/Telegraph/app.css");
 				Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 
-
 			    auth_window.present();
 
 				Td_log.verbosity_level(0);
 
-			    tdi.Run();
+			    TDI.client_run(null);
 
-			} catch (Error e) { error(@"[Telegraph]$(e.code): $(e.message)"); }
+			} catch (Error e) { error(@"$(e.code): $(e.message)"); }
 
 		}
 
@@ -71,33 +73,42 @@ namespace Telegraph {
 
 		}
 
-		void receive_td (string type, Json.Node data)
+		bool? auth_ready (Json.Node data)
+		{
+
+			var data_obj = data.get_object();
+			Json.Object auth_obj = data_obj.get_object_member("authorization_state");
+			string data_type = auth_obj.get_string_member("@type");
+
+			//debug ("Received %s", data_type);
+
+			if (data_type == "authorizationStateReady")
+			{
+
+				auth_window.close();
+				main_window.present();
+				return true;
+
+			}
+
+			return false;
+
+		}
+
+		bool? update_myid_opt (Json.Node data)
 		{
 
 			var data_obj = data.get_object();
 
-			switch (type) {
-			case "updateAuthorizationState":
+			if (data_obj.get_string_member("name") == "my_id")
+			{
 
+				user_id = (int)data_obj.get_object_member("value").get_int_member("value");
+				return true;
 
-				Json.Object auth_obj = data_obj.get_object_member("authorization_state");
-				string data_type = auth_obj.get_string_member("@type");
-
-				if (data_type == "authorizationStateReady")
-				{
-
-					main_window.present();
-
-				}
-
-				break;
-			case "updateOption":
-
-				if (data_obj.get_string_member("name") == "my_id")
-					user_id = (int)data_obj.get_object_member("value").get_int_member("value");
-
-				break;
 			}
+
+			return false;
 
 		}
 
