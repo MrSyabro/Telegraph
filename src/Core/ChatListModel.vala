@@ -58,7 +58,7 @@
 			var data_arr = data_obj.get_array_member ("chat_ids");
 			data_arr.foreach_element(foreach_chats);
 
-			return null;
+			return false;
 
 		}
 

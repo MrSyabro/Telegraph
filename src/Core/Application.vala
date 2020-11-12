@@ -84,6 +84,7 @@ namespace Telegraph {
 			if (data_type == "authorizationStateReady")
 			{
 
+				auth_window.close();
 				main_window.present();
 				return true;
 

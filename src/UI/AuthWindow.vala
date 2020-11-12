@@ -107,7 +107,7 @@ namespace Telegraph {
 				break;
 			case "authorizationStateReady":
 
-				this.close();
+				//this.close();
 
 				return true;
 

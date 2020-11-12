@@ -52,7 +52,8 @@
         public bool pending_requests { get; set; }
         public Thread<void> client_thread;
         public Gee.ArrayList<TDIRequest> request_queue;
-        public uint offline_count { get; set; default = 0; }
+		public uint offline_count { get; set; default = 0; }
+		public MainLoop mainloop { get; set; }
 
 		public void thread_func()
 		{
@@ -60,7 +61,7 @@
 			var timer = new Timer ();
         	timer.start ();
 
-        	const double TIMEOUT = 10.0;
+        	const double TIMEOUT = 1.0;
 
         	while(!loop_stop)
 	        {
@@ -172,7 +173,8 @@
 
         	temp.client_thread = new Thread<void> (string.join("_","TDLib_thread", temp.client_uid.to_string()), temp.thread_func);
 
-        	new MainLoop().run();
+			temp.mainloop = new MainLoop();
+			temp.mainloop.run();
 
         }
 
@@ -182,7 +184,11 @@
         	assert((client ?? TDI.default_client) != null);
 			var temp = client ?? TDI.default_client;
 
-        	temp.loop_stop = false;
+			temp.loop_stop = true;
+
+			temp.client_thread.join();
+			temp.mainloop.quit();
+			
             Td_json.client_destroy(temp.client);
 
         }

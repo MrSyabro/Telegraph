@@ -93,7 +93,7 @@
 			obj.set_string_member ("@type", "getChatHistory");
 			obj.set_int_member ("chat_id", chat_id);
 			obj.set_int_member ("from_message_id", 0);
-			obj.set_int_member ("offset", 0);
+			obj.set_int_member ("offset", -10);
 			obj.set_int_member ("limit", 20);
 			node.set_object (obj);
 
@@ -216,6 +216,8 @@
 			element.pending = ((mess_state != null) && (mess_state.get_string_member("@type") == "messageSendingStatePending"));
 
 			messages_list.add(element);
+
+			debug ("Added message wuth sender_user_id=%s", element.owner.id.to_string());
 
 		}
 

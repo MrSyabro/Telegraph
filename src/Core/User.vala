@@ -39,7 +39,9 @@ namespace Telegraph
     	public Users ()
     	{
 
-    		list = new Gee.TreeMap<int, User> ();
+			list = new Gee.TreeMap<int, User> ();
+			
+			TDI.send_request (null, new TDIRequest("user", null, receive_user, true));
 
     	}
 
@@ -81,7 +83,7 @@ namespace Telegraph
 				obj.set_int_member("user_id", id);
 				node.set_object(obj);
 
-				TDI.send_request (null, new TDIRequest("updateMessageSendSucceeded", node, receive_user, false));
+				TDI.send_request (null, new TDIRequest(null, node, null, false));
 
 				debug("User [%s] getting in TDLib.", data.id.to_string());
 
@@ -94,9 +96,11 @@ namespace Telegraph
     	bool? receive_user (Json.Node data)
     	{
 
-    		var data_obj = data.get_object();
+    		//var data_obj = data.get_object();
 
-    		User user = Json.gobject_deserialize (typeof(User), data) as User;
+			User user = Json.gobject_deserialize (typeof(User), data) as User;
+			
+			debug ("Received user data ID=%s", user.id.to_string());
 
 			if (list.has_key(user.id))
 			{
@@ -111,7 +115,7 @@ namespace Telegraph
 
 			debug("User [%s] updaed from TDLib.", user.id.to_string());
 
-			return null;
+			return false;
 
     	}
 
