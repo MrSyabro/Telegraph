@@ -33,6 +33,8 @@ namespace Telegraph {
 
 		[GtkChild]ListBox MessageList_ListBox; // Переписка
 
+		[GtkChild]Spinner request_pending;
+
 		int64? selected_chat;
 		MessageData selected_message;
 
@@ -68,6 +70,16 @@ namespace Telegraph {
 			//Application.tdi.receive_message.connect (receive_td);
 
 			this.destroy.connect(() => {TDI.client_stop(null);});
+
+		}
+
+		public void request_pending_cb (bool pending)
+		{
+
+			if (pending)
+				request_pending.start();
+			else
+				request_pending.stop();
 
 		}
 

@@ -109,9 +109,9 @@
 
 							assert(request_queue.remove(request));
 							offline_count--;
+							i--;
 
 							requests_pending (offline_count > 0);
-							//size--;
 
 						}
 						else if (del == true)
@@ -315,7 +315,7 @@
         {
 
 			warning("[TDLib error]%s", Json.to_string(data, true));
-			return null;
+			return false;
 
         }
     }

@@ -212,6 +212,17 @@ Author: MrSyabro
                     <property name="can-focus">False</property>
                     <property name="spacing">6</property>
                     <child>
+                      <object class="GtkSpinner" id="request_pending">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="HdyAvatar" id="ChatAvatar_Header">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -220,7 +231,7 @@ Author: MrSyabro
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">0</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -260,7 +271,7 @@ Author: MrSyabro
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>

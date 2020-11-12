@@ -37,10 +37,12 @@ namespace Telegraph {
 
 			try {
 
-				TDI.create_client(1);
+				var client = TDI.create_client(1);
 				main_window = new MainWindow (this);
 				auth_window = new AuthWindow (this);
 				users = new Users();
+
+				client.requests_pending.connect(main_window.request_pending_cb);
 
 				TDI.send_request(null, new TDIRequest("updateAuthorizationState", null, auth_ready, true));
 				TDI.send_request(null, new TDIRequest("updateOption", null, update_myid_opt, true));
@@ -52,14 +54,13 @@ namespace Telegraph {
 				css_provider.load_from_resource ("/com/syabrocraft/Telegraph/app.css");
 				Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 
-
 			    auth_window.present();
 
 				Td_log.verbosity_level(0);
 
 			    TDI.client_run(null);
 
-			} catch (Error e) { error(@"[Telegraph]$(e.code): $(e.message)"); }
+			} catch (Error e) { error(@"$(e.code): $(e.message)"); }
 
 		}
 

@@ -66,7 +66,7 @@
 
 				messages_request = new TDIRequest("messages", null, receive_messages, true);
 				new_message_request = new TDIRequest("updateNewMessage", null, receive_new_message, true);
-				rm_message_request = new TDIRequest("updateDeleteMessage", null, receive_rm_message, true);
+				rm_message_request = new TDIRequest("updateDeleteMessages", null, receive_rm_message, true);
 
 				TDI.send_request(null, messages_request);
 
@@ -144,6 +144,8 @@
 
 			if (data_obj.get_int_member("chat_id") == this.chat_id)
 			{
+
+				debug("Received deleting %s", this.chat_id.to_string());
 
 				if (!data_obj.get_boolean_member("from_cache"))
 				{

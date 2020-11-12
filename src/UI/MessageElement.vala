@@ -45,7 +45,7 @@ namespace Telegraph {
 			create_content(mess_data.content);
 
 			//mess_data.update.connect(this.update);
-			//mess_data.owner.update.connect(this.update_user);
+			mess_data.owner.update.connect(this.update_user);
 
 		}
 
