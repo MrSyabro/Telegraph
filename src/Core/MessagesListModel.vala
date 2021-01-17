@@ -22,6 +22,9 @@
  	class MessagesListModel : ListModel, Object
  	{
 
+ 		// TODO чат всегда следит з последним сообщением
+ 		// TODO динамическая подзагрузка чата
+
  		Gee.ArrayList<Telegraph.MessageData> messages_list;
  		int64 chat_id;
 
@@ -70,8 +73,19 @@
 
 				TDI.send_request(null, messages_request);
 
+				var node = new Json.Node (Json.NodeType.OBJECT);
+				var obj = new Json.Object ();
+				obj.set_string_member ("@type", "getChatHistory");
+				obj.set_int_member ("chat_id", chat_id);
+				obj.set_int_member ("from_message_id", 0);
+				obj.set_int_member ("offset", 99);
+				obj.set_int_member ("limit", 20);
+				node.set_object (obj);
+
+				TDI.send_request(null, new TDIRequest(null, node, null, false));
+
 				load_next_packet();
-				load_next_packet();
+				//load_next_packet();
 
 				TDI.send_request(null, new_message_request);
 				TDI.send_request(null, rm_message_request);
@@ -92,8 +106,12 @@
 			var obj = new Json.Object ();
 			obj.set_string_member ("@type", "getChatHistory");
 			obj.set_int_member ("chat_id", chat_id);
+
+			int64 fmid = 0;
+			if (messages_list.size > 0) fmid = messages_list.@get(0).message_id;
+
 			obj.set_int_member ("from_message_id", 0);
-			obj.set_int_member ("offset", -10);
+			obj.set_int_member ("offset", 0);
 			obj.set_int_member ("limit", 20);
 			node.set_object (obj);
 

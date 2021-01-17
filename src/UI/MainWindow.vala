@@ -33,14 +33,20 @@ namespace Telegraph {
 
 		[GtkChild]ListBox MessageList_ListBox; // Переписка
 
-		[GtkChild]Spinner request_pending;
+		//[GtkChild]Spinner request_pending;
+
+		//[GtkChild]Gtk.Scrollbar scrollbar1;
+		[GtkChild]Gtk.ScrolledWindow scrolled_window;
+		[GtkChild]Gtk.Viewport viewport1;
+
+		Gtk.Adjustment adj;
+		Gtk.Scrollbar scrollbar;
 
 		int64? selected_chat;
 		MessageData selected_message;
 
 		Telegraph.ChatListModel chat_list;
 		Telegraph.MessagesListModel messages_list;
-
 
 		//GLib.ListStore chat_list_store = new GLib.ListStore (Type.OBJECT);
 
@@ -59,7 +65,7 @@ namespace Telegraph {
 
 			//ChatList_ListBox.bind_model(ChatList_ListStore, ElementChatList.new_element);
 
-
+			scrollbar = new Gtk.Scrollbar(Gtk.Orientation.HORIZONTAL, adj);
 
 			chat_list = new Telegraph.ChatListModel(ChatList_ListBox);
 			messages_list = new Telegraph.MessagesListModel();
@@ -71,15 +77,19 @@ namespace Telegraph {
 
 			this.destroy.connect(() => {TDI.client_stop(null);});
 
+			adj = MessageList_ListBox.get_adjustment ();
+			scrollbar.set_adjustment(adj);
+			//adj = scrolled_window.get_vadjustment();
+
 		}
 
 		public void request_pending_cb (bool pending)
 		{
 
-			if (pending)
+			/*if (pending)
 				request_pending.start();
 			else
-				request_pending.stop();
+				request_pending.stop();*/
 
 		}
 
@@ -112,6 +122,10 @@ namespace Telegraph {
 			TDI.send_request(null, new TDIRequest(null, node, null, false));
 
 			messages_list.select_chat(selected_chat);
+
+			//scrollbar1.set_adjustment(MessageList_ListBox.get_adjustment ());
+			adj.set_value(adj.upper);
+			scrolled_window.set_vadjustment(adj);
 
 		}
 

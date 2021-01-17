@@ -65,6 +65,8 @@ namespace Telegraph {
 		bool? receive_chat (Json.Node data)
 		{
 
+			//debug(Json.to_string(data, true));
+
 			var data_obj = data.get_object();
 
 			if (data_obj.get_int_member("id") == this.id)
@@ -73,7 +75,7 @@ namespace Telegraph {
 	    		Name_ChatListElement.set_text(data_obj.get_string_member("title"));
 				var message = data_obj.get_object_member("last_message");
 				set_last_message(message);
-				this.order = data_obj.get_string_member("order").to_int64();
+				this.order = data_obj.get_array_member("positions").get_object_element(0).get_string_member("order").to_int64();
 
 	    	}
 
@@ -90,7 +92,8 @@ namespace Telegraph {
 			{
 
 				//debug ("Getted updateChatOrder respnse: %s", Json.to_string(data, true));
-				this.order = data_obj.get_string_member("order").to_int64();
+
+				this.order = data_obj.get_array_member("positions").get_object_element(0).get_string_member("order").to_int64();
 
 			}
 
@@ -106,10 +109,10 @@ namespace Telegraph {
 			if (data_obj.get_int_member("chat_id") == this.id)
 			{
 
-				debug ("Getting LastMessage: ID = %s; Order = %ld(%s)", data_obj.get_int_member("chat_id").to_string(), data_obj.get_string_member("order").to_long(), data_obj.get_string_member("order"));
+				debug ("Getting LastMessage: ID = %s", data_obj.get_int_member("chat_id").to_string());
 				var mess_obj = data_obj.get_object_member("last_message");
 				set_last_message(mess_obj);
-				this.order = data_obj.get_string_member("order").to_int64();
+				this.order = data_obj.get_array_member("positions").get_object_element(0).get_string_member("order").to_int64();
 
 			}
 

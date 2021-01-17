@@ -141,7 +141,7 @@
 
         // Ключ шифрования кеша базы данных. Временная мера.
         // TODO: Добавить генерацию и хранение ключа в хранилище Gnome
-        public static string key = "MHcCAQEEIL4v10M//RqtlAglGrBCeB6snkyUxJH3+jid8MazaHiSoAoGCCqGSM49AwEHoUQDQgAEcEiPXejEv49kLtscGah+eyyHYsnHhYF2EskrNAsoYbiYVkmpQxNgeJojoPRyeM+2IrTH4QFcrNG6zoTelzI1TQ==";
+        public static string key = """MHcCAQEEIL4v10M//RqtlAglGrBCeB6snkyUxJH3+jid8MazaHiSoAoGCCqGSM49AwEHoUQDQgAEcEiPXejEv49kLtscGah+eyyHYsnHhYF2EskrNAsoYbiYVkmpQxNgeJojoPRyeM+2IrTH4QFcrNG6zoTelzI1TQ==""";
 
 		public static TDIClient? default_client;
 
